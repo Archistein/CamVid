@@ -1,4 +1,4 @@
-# U-Net for Semantic Segmentation on CamVid Dataset
+# U-Net for Semantic Segmentation on CamVid Dataset without any pretrained weights
 
 [CamVid](https://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/) (Cambridge-driving Labeled Video Database) is a road/driving scene understanding database which was originally captured as five video sequences with a 960×720 resolution camera mounted on the dashboard of a car. Those sequences were sampled adding up to 701 frames. Those stills were manually annotated with 32 classes: void, building, wall, tree, vegetation, fence etc.
 
