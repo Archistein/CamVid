@@ -6,6 +6,7 @@ from tqdm import tqdm
 import numpy as np
 from math import isclose
 import segmentation_models_pytorch as smp
+from train import ComboLoss
 import onnx
 
 
@@ -48,9 +49,7 @@ def check_onnx_model(torch_model: nn.Module,
 
     print('Exported model has been tested with ONNXRuntime, and the result looks good!')
 
-    dice_loss = smp.losses.DiceLoss(mode='multiclass') 
-    focal_loss = smp.losses.FocalLoss(mode='multiclass') 
-    criterion = lambda y_pred, y_true: alpha * dice_loss(y_pred, y_true) + (1 - alpha) * focal_loss(y_pred, y_true)
+    criterion = ComboLoss(alpha)
 
     running_loss = 0
     running_iou = 0 

@@ -9,6 +9,18 @@ from typing import Optional
 from dataset import *
 
 
+class ComboLoss(nn.Module):
+    def __init__(self, alpha: float) -> None:
+        super().__init__()
+
+        self.alpha = alpha
+        self.dice_loss = smp.losses.DiceLoss(mode='multiclass') 
+        self.focal_loss = smp.losses.FocalLoss(mode='multiclass') 
+
+    def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
+        return self.alpha * self.dice_loss(y_pred, y_true) + (1 - self.alpha) * self.focal_loss(y_pred, y_true)
+
+
 @torch.inference_mode
 def evaluate(model: nn.Module, 
              criterion: callable,
@@ -115,10 +127,8 @@ def trainer(model: nn.Module,
     train_iou_hist, train_loss_hist = [], []
     val_iou_hist, val_loss_hist = [], []
 
-    dice_loss = smp.losses.DiceLoss(mode='multiclass') 
-    focal_loss = smp.losses.FocalLoss(mode='multiclass') 
-    criterion = lambda y_pred, y_true: alpha * dice_loss(y_pred, y_true) + (1 - alpha) * focal_loss(y_pred, y_true)
-    
+    criterion = ComboLoss(alpha)
+
     optimizer = optim.AdamW(model.parameters(), lr = lr)
     scheduler  = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.8, patience=5, min_lr=8e-5)
     
