@@ -90,6 +90,9 @@ def main() -> None:
 
         print('Convert model to ONNX')
 
+        if not os.path.exists('onnx'):
+            os.mkdir('onnx')
+
         dummy = torch.randn(1, 3, infer_height, infer_width, requires_grad=True, device=device)
         path_to_onnx = 'onnx/unet.onnx'
 
